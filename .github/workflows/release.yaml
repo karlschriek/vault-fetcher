@@ -32,19 +32,19 @@ jobs:
         continue-on-error: true
         run: |
           git tag
-          git tag $TAG
+          git tag v$TAG
           git push --tags
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.17.1' # The Go version to download (if necessary) and use.
+      - name: Build GO binary
+        env:
+          TAG: ${{ steps.semantic-version.outputs.version }}
+        continue-on-error: true
+        run: |
+          go build
 
-  release-linux-amd64:
-    name: release linux/amd64
-    runs-on: ubuntu-latest
-    needs: tag
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: wangyoucao577/go-release-action@v1.24
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: linux
-          goarch: amd64
+
+
+
+    
