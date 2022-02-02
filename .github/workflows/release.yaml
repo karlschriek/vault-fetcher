@@ -40,10 +40,12 @@ jobs:
       - name: Build GO binary
         env:
           TAG: ${{ steps.semantic-version.outputs.version }}
-        continue-on-error: true
+          TARGET_REPO: karlschriek/vault-kv-get
         run: |
           go build
-          ls
+      - name: Release binary
+        run: |
+          gh release create $TAG vault-kv-get -R $TARGET_REPO -t "Release $TAG"
 
 
 
