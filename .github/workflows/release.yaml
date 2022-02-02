@@ -1,0 +1,55 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+defaults:
+  run:
+    shell: bash
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: paulhatch/semantic-version@v4.0.2
+        id: semantic-version
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          format: "${major}.${minor}.${patch}"
+          change_path: "Dockerfile"
+          short_tags: false
+          bump_each_commit: true      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create Tag
+        env:
+          TAG: ${{ steps.semantic-version.outputs.version }}
+        continue-on-error: true
+        run: | 
+          git tag $TAG
+          git push --tags
+  release-linux-amd64:
+    name: release linux/amd64
+    runs-on: ubuntu-latest
+    needs: tag
+    steps:
+    - uses: actions/checkout@v2
+    - uses: wangyoucao577/go-release-action@v1.24
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: linux
+        goarch: amd64
+      

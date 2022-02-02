@@ -1,2 +1,1 @@
-go mod init github.com/karlschriek/vault-fetcher
-go mod tidy
+A small golang project that parses stdin and looks for references to vault secrets to render.
