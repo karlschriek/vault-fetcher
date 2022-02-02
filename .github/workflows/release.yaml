@@ -31,8 +31,10 @@ jobs:
           TAG: ${{ steps.semantic-version.outputs.version }}
         continue-on-error: true
         run: |
+          git tag
           git tag $TAG
           git push --tags
+
   release-linux-amd64:
     name: release linux/amd64
     runs-on: ubuntu-latest
