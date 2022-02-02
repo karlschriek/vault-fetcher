@@ -34,20 +34,18 @@ jobs:
           git tag
           git tag v$TAG
           git push --tags
-      - uses: actions/setup-go@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
         with:
-          go-version: '1.17.1' # The Go version to download (if necessary) and use.
-      - name: Build GO binary
+          go-version: "1.17.1"
+      - name: Build Go binary
         env:
           TAG: ${{ steps.semantic-version.outputs.version }}
           TARGET_REPO: karlschriek/vault-kv-get
         run: |
           go build
-      - name: Release binary
+      - name: Release Go binary
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN }}
         run: |
           gh release create $TAG vault-kv-get -R $TARGET_REPO -t "Release $TAG"
-
-
-
-
-    
