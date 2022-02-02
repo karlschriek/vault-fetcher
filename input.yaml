@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+stringData:
+  someSecret: <vault-kv-get> -field=foo -version=1 secret/my-secret </vault-kv-get>
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret2
+stringData:
+  someSecret: <vault-kv-get> -field=foo -version=2 secret/my-secret </vault-kv-get>
