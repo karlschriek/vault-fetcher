@@ -36,9 +36,9 @@ func main() {
 
 	for _, match := range matches {
 		args := strings.Replace(strings.Replace(match, "<vault-kv-get>", "", -1), "</vault-kv-get>", "", -1)
-		err, secret, _ := bashOut(fmt.Sprintf("vault kv get %s", args))
-		if err != nil {
-			panic("some error found")
+		err, secret, stderr := bashOut(fmt.Sprintf("vault kv get %s", args))
+		if stderr != "" || err != nil {
+			panic(stderr)
 		}
 		outputString = strings.Replace(outputString, match, secret, -1)
 	}
